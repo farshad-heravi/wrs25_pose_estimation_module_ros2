@@ -1,0 +1,16 @@
+# Goal definition
+string camera_id  # ID of the camera/vision module to use
+string query      # Query to send (e.g., 'check_bottle', 'check_box_closed', 'check_container')
+---
+# Result definition
+bool success
+string message
+geometry_msgs/Pose target_pose
+---
+# Feedback definition
+string status
+
+
+
+
+

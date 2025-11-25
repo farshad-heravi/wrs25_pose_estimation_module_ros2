@@ -1,0 +1,16 @@
+# Goal definition
+bool trigger  # Trigger to process the current camera frame
+---
+# Result definition
+bool success
+string message
+string[] object_names
+float32[] angles
+int32[] center_x
+int32[] center_y
+string visualization_path
+---
+# Feedback definition
+string status
+float32 progress
+
