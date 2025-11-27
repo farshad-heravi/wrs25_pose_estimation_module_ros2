@@ -144,20 +144,32 @@ class SprayModelWrapper:
                 'visualization_path': None
             }
 
-    def illustrate_result(self, img, objects, select_bottle=None):
+    def illustrate_result(self, img, objects, select_bottle=None, valid_area=None):
         """Illustrate the result."""
         if img is None or not isinstance(img, np.ndarray):
             return
         
+        if valid_area is not None:
+            # draw a rectangle on the image
+            cv2.rectangle(img, (valid_area[0], valid_area[1]), (valid_area[2], valid_area[3]), (0, 0, 255), 2)
+        
         # illustrate the all bottles
         for obj in objects:
-            cv2.circle(img, (obj['centroid'][0], obj['centroid'][1]), 5, (0, 0, 255), -1)
-            cv2.line(img, (obj['tail'][0], obj['tail'][1]), (obj['head'][0], obj['head'][1]), (0, 255, 0), 2)
+            # Draw line connecting tail to head
+            cv2.line(img, (obj['tail'][0], obj['tail'][1]), (obj['head'][0], obj['head'][1]), (0, 0, 255), 2)
+            # Draw circles: head (red), centroid (red), tail (blue)
+            cv2.circle(img, (obj['head'][0], obj['head'][1]), 5, (0, 0, 255), -1)  # Red for head
+            cv2.circle(img, (obj['centroid'][0], obj['centroid'][1]), 5, (0, 0, 255), -1)  # Red for centroid
+            cv2.circle(img, (obj['tail'][0], obj['tail'][1]), 5, (255, 0, 0), -1)  # Blue for tail
 
         # illustrate the selected bottle
         if select_bottle is not None:
-            cv2.circle(img, (select_bottle['centroid'][0], select_bottle['centroid'][1]), 5, (0, 255, 0), -1)
-            cv2.line(img, (select_bottle['tail'][0], select_bottle['tail'][1]), (select_bottle['head'][0], select_bottle['head'][1]), (0, 255, 0), 2)
+            # Draw line connecting tail to head
+            cv2.line(img, (select_bottle['tail'][0], select_bottle['tail'][1]), (select_bottle['head'][0], select_bottle['head'][1]), (0, 255, 0), 4)
+            # Draw circles: head (red), centroid (green for selected), tail (blue)
+            cv2.circle(img, (select_bottle['head'][0], select_bottle['head'][1]), 5, (0, 0, 255), -1)  # Red for head
+            cv2.circle(img, (select_bottle['centroid'][0], select_bottle['centroid'][1]), 5, (0, 255, 0), -1)  # Green for centroid
+            cv2.circle(img, (select_bottle['tail'][0], select_bottle['tail'][1]), 5, (255, 0, 0), -1)  # Blue for tail
 
         cv2.imshow('Result', img)
         cv2.waitKey(0)
