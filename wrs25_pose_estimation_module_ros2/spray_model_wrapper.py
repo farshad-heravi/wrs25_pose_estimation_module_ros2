@@ -7,16 +7,17 @@ import sys
 import os
 import cv2
 import numpy as np
+from pathlib import Path
+from rclpy.logging import get_logger
 
-# Get WRS-Vision path from environment or use default
-WRS_VISION_ROOT = '/home/mpt/projects/wrs_vision/WRS-Vision'
-# WRS_VISION_ROOT = os.environ.get('WRS_VISION_ROOT', 
-#                                   os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', 'WRS-Vision'))
-SPRAY_MODEL_PATH = os.path.join(WRS_VISION_ROOT, 'spray')
-SPRAY_MODEL_PATH = os.path.abspath(SPRAY_MODEL_PATH)
+# Get the path to the spray model
+CURRENT_FILE = Path(__file__).resolve()
+SRC_DIR = CURRENT_FILE.parent.parent.parent
+WRS_VISION_ROOT = str(SRC_DIR / 'wrs25_pose_estimation_module')
+SPRAY_MODEL_PATH = str(SRC_DIR / 'wrs25_pose_estimation_module' / 'spray')
 
-print(f"WRS_VISION_ROOT: {WRS_VISION_ROOT}")
-print(f"SPRAY_MODEL_PATH: {SPRAY_MODEL_PATH}")
+get_logger().debug(f"WRS_VISION_ROOT: {WRS_VISION_ROOT}")
+get_logger().debug(f"SPRAY_MODEL_PATH: {SPRAY_MODEL_PATH}")
 
 if not os.path.exists(SPRAY_MODEL_PATH):
     raise RuntimeError(

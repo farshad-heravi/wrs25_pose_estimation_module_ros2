@@ -7,12 +7,16 @@ import sys
 import os
 import cv2
 import numpy as np
+from pathlib import Path
+from rclpy.logging import get_logger
 
-# Get WRS-Vision path from environment or use default
-WRS_VISION_ROOT = os.environ.get('WRS_VISION_ROOT', 
-                                  os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', 'WRS-Vision'))
-BOX_MODEL_PATH = os.path.join(WRS_VISION_ROOT, 'box')
-BOX_MODEL_PATH = os.path.abspath(BOX_MODEL_PATH)
+CURRENT_FILE = Path(__file__).resolve()
+SRC_DIR = CURRENT_FILE.parent.parent.parent
+WRS_VISION_ROOT = str(SRC_DIR / 'wrs25_pose_estimation_module')
+BOX_MODEL_PATH = str(SRC_DIR / 'wrs25_pose_estimation_module' / 'box')
+
+get_logger().debug(f"WRS_VISION_ROOT: {WRS_VISION_ROOT}")
+get_logger().debug(f"BOX_MODEL_PATH: {BOX_MODEL_PATH}")
 
 if not os.path.exists(BOX_MODEL_PATH):
     raise RuntimeError(
