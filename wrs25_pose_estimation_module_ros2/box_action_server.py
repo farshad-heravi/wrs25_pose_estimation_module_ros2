@@ -22,7 +22,7 @@ class BoxActionServer(Node):
         super().__init__('box_action_server')
         
         # Declare parameter for camera topic
-        self.declare_parameter('camera_topic', '/camera/image_raw')
+        self.declare_parameter('camera_topic', '/camera/camera/color/image_raw')
         camera_topic = self.get_parameter('camera_topic').get_parameter_value().string_value
         
         # Initialize CV Bridge for image conversion
