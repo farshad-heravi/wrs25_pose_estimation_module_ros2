@@ -134,6 +134,62 @@ class BoxModelWrapper:
                 'objects': [],
                 'visualization_path': None
             }
+
+    def illustrate_result(self, img, objects, select_box=None, valid_area=None):
+        """
+        Illustrate the detection results on the image.
+        
+        Args:
+            img (numpy.ndarray): Input image to draw on
+            objects (list): List of detected objects with 'center' and 'angle' keys
+            select_box (dict, optional): Selected box to highlight
+            valid_area (list, optional): Valid area rectangle [x1, y1, x2, y2]
+        """
+        if img is None or not isinstance(img, np.ndarray):
+            return
+        
+        if valid_area is not None:
+            # Draw a rectangle for the valid area
+            cv2.rectangle(img, (valid_area[0], valid_area[1]), (valid_area[2], valid_area[3]), (0, 0, 255), 2)
+        
+        # Illustrate all boxes
+        for obj in objects:
+            center = obj['center']
+            angle = obj['angle']
+            
+            # Draw center point (red)
+            cv2.circle(img, center, 5, (0, 0, 255), -1)
+            
+            # Draw orientation line (length proportional to visual clarity)
+            line_length = 50
+            angle_rad = np.deg2rad(angle)
+            end_x = int(center[0] + line_length * np.cos(angle_rad))
+            end_y = int(center[1] + line_length * np.sin(angle_rad))
+            cv2.line(img, center, (end_x, end_y), (0, 0, 255), 2)
+            
+            # Draw arrow head to indicate direction
+            cv2.arrowedLine(img, center, (end_x, end_y), (0, 0, 255), 2, tipLength=0.3)
+        
+        # Illustrate the selected box
+        if select_box is not None:
+            center = select_box['center']
+            angle = select_box['angle']
+            
+            # Draw center point (green for selected)
+            cv2.circle(img, center, 7, (0, 255, 0), -1)
+            
+            # Draw orientation line with different color and thickness
+            line_length = 60
+            angle_rad = np.deg2rad(angle)
+            end_x = int(center[0] + line_length * np.cos(angle_rad))
+            end_y = int(center[1] + line_length * np.sin(angle_rad))
+            
+            # Draw thicker arrow for selected box
+            cv2.arrowedLine(img, center, (end_x, end_y), (0, 255, 0), 4, tipLength=0.3)
+        
+        cv2.imshow('Result', img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
     
     def process_image(self, image_path):
         """

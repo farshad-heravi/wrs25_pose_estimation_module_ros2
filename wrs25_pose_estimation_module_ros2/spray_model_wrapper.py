@@ -16,8 +16,8 @@ SRC_DIR = CURRENT_FILE.parent.parent.parent
 WRS_VISION_ROOT = str(SRC_DIR / 'wrs25_pose_estimation_module')
 SPRAY_MODEL_PATH = str(SRC_DIR / 'wrs25_pose_estimation_module' / 'spray')
 
-get_logger().debug(f"WRS_VISION_ROOT: {WRS_VISION_ROOT}")
-get_logger().debug(f"SPRAY_MODEL_PATH: {SPRAY_MODEL_PATH}")
+get_logger('spray_model_wrapper').debug(f"WRS_VISION_ROOT: {WRS_VISION_ROOT}")
+get_logger('spray_model_wrapper').debug(f"SPRAY_MODEL_PATH: {SPRAY_MODEL_PATH}")
 
 if not os.path.exists(SPRAY_MODEL_PATH):
     raise RuntimeError(

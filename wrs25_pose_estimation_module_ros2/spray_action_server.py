@@ -17,6 +17,8 @@ from wrs25_pose_estimation_module_ros2.spray_model_wrapper import SprayModelWrap
 from wrs25_pose_estimation_module_ros2.action import SprayVision
 
 
+isDebugging = True
+
 class SprayActionServer(Node):
     """Action server for Spray Vision processing."""
     
@@ -54,7 +56,7 @@ class SprayActionServer(Node):
 
         # define valid area to search for bottle in the image
         # valid area is a rectangle in the image, defined by the top-left and bottom-right corners
-        self.valid_area = (100, 100, 1280-200, 720-200)
+        self.valid_area = (100, 100, 1280-200, 720-200) # CONFIG
         self.get_logger().info(f'Valid area: {self.valid_area[0]}, {self.valid_area[1]}, {self.valid_area[2]}, {self.valid_area[3]}')
     
     def image_callback(self, msg):
@@ -110,9 +112,6 @@ class SprayActionServer(Node):
         
         result = self.spray_wrapper.process_frame(self.latest_frame)
 
-        # illustrate the result
-        # self.spray_wrapper.illustrate_result(self.latest_frame, result['objects'])
-
         #  postprocess the result
         result = self.postprocess_result(result)
 
@@ -139,8 +138,9 @@ class SprayActionServer(Node):
         # Publish TF for the target bottle
         self.publish_target_bottle_tf(bottle_for_picking)
         
-        # illustrate the bottle for picking
-        self.spray_wrapper.illustrate_result(self.latest_frame, result['objects'], select_bottle=bottle_for_picking, valid_area=self.valid_area)
+        if isDebugging:
+            # illustrate the bottle for picking
+            self.spray_wrapper.illustrate_result(self.latest_frame, result['objects'], select_bottle=bottle_for_picking, valid_area=self.valid_area)
 
 
         # Create result message
@@ -183,7 +183,7 @@ class SprayActionServer(Node):
 
         # print(f'Bottles length: {bottles_length}')
         for index, length in enumerate(bottles_length):
-            if 60 <= length <= 100:
+            if 60 <= length <= 100: # CONFIG: valid bottle length range in pixels
                 filtered_results.append(result['objects'][index].copy())
         result['objects'] = filtered_results
         return result
